@@ -15,7 +15,12 @@ const app = new Vue({
     el: '#app',
     created() {
         http.init();
-        userStore.init();
+        userStore.init(this.toLogin);
+    },
+    methods: {
+        toLogin() {
+            this.$router.push('/login');
+        }
     },
     render: h => h(require('./app.vue')),
 });

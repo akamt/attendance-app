@@ -18,13 +18,15 @@ export default {
         })
     },
 
-    setCurrentUser() {
+    setCurrentUser(toLogin = null) {
         http.get('me', res => {
                 this.state.user = res.data;
                 this.state.authenticated = true;
             }, error => {
                 this.state.user = {};
                 this.state.authenticated = false;
+                // to login
+                toLogin()
             }
         )
     },
@@ -40,7 +42,7 @@ export default {
     /**
      * Init the store.
      */
-    init() {
-        this.setCurrentUser()
+    init(toLogin) {
+        this.setCurrentUser(toLogin)
     }
 }
