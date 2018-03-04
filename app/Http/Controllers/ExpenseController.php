@@ -11,14 +11,28 @@ class ExpenseController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request $request
      * @return mixed
      */
-    public function index()
+    public function getExpenseList(Request $request)
     {
         $user = \JWTAuth::parseToken()->authenticate();
         $expense = new Expense();
 
-        return $expense->expenseList($user->id);
+        return $expense->expenseList($user->id, $request->period);
+    }
+
+    /**
+     * 期間の一覧を返す
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getPeriodList()
+    {
+        $user = \JWTAuth::parseToken()->authenticate();
+        $expense = new Expense();
+
+        return $expense->expensePeriodList($user->id);
     }
 
     /**

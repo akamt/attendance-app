@@ -12,17 +12,45 @@ class Expense extends Model
     /**
      * 経費の一覧を返す
      *
-     * @param $userId
+     * @param integer $userId
+     * @param string $period
      * @return \Illuminate\Support\Collection
      */
-    public function expenseList($userId)
+    public function expenseList($userId, $period)
     {
-        $list = DB::table('expenses')
+        $expenceList = DB::table('expenses')
             ->join('categories', 'expenses.category_id', '=', 'categories.id')
             ->select('expenses.*', 'categories.name as category_name')
-            ->where('user_id', '=', $userId)
+            ->where([
+                ['user_id', '=', $userId],
+                ['month', '=', $period],
+            ])
             ->get();
 
-        return $list;
+        // 取得できない場合
+        if ($expenceList->isEmpty()) {
+            // TODO error messageを考える
+            return response()->json(['message' => 'not data'], 201);
+        }
+
+        return $expenceList;
+    }
+
+    /**
+     * 期間の一覧を返す
+     *
+     * @param integer $userId
+     * @return \Illuminate\Support\Collection
+     */
+    public function expensePeriodList($userId)
+    {
+        $periodList = DB::table('expenses')
+            ->distinct()
+            ->select('expenses.month')
+            ->where('user_id', '=', $userId)
+            ->orderBy('month', 'asc')
+            ->get();
+
+        return $periodList;
     }
 }

@@ -26,5 +26,8 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::post('refresh', 'AuthController@refresh');
         Route::resource('categories', 'CategoryController');
         Route::resource('expenses', 'ExpenseController');
+
+        Route::get('period/list', 'ExpenseController@getPeriodList');
+        Route::post('expense/list', 'ExpenseController@getExpenseList');
     });
 });
