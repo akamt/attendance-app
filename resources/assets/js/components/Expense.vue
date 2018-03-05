@@ -1,22 +1,20 @@
 <template>
     <el-container>
         <el-header height="50px">
+            <span>日付</span>
             <span>経費名</span>
             <span>金額</span>
             <span>支払先</span>
             <span>種類</span>
-            <div class="picker-wrapper">
-                <el-date-picker
-                        v-model="period"
-                        type="month"
-                        value-format="yyyy-MM"
-                        placeholder="対象月">
-                </el-date-picker>
-            </div>
         </el-header>
         <el-main>
             <el-form @keyup.enter.native="add">
                 <div class="form-wrapper" v-for="(form, index) in forms">
+                    <el-form-item>
+                        <el-date-picker v-model="form.date" value-format="yyyy-MM-dd" type="date"
+                                        placeholder="対象日を選択">
+                        </el-date-picker>
+                    </el-form-item>
                     <el-form-item>
                         <el-input placeholder="経費名" v-model="form.name" clearable>
                         </el-input>
@@ -64,9 +62,9 @@
         components: {ElContainer},
         data() {
             return {
-                period: '',
                 forms: [
                     {
+                        date: '',
                         name: '',
                         category_id: 1,
                         value: 0,
@@ -93,6 +91,7 @@
         methods: {
             addForm() {
                 this.forms.push({
+                    date: '',
                     name: '',
                     kind: 1,
                     value: 0,
@@ -132,13 +131,6 @@
             padding-left: 15px;
             width: 25%;
         }
-
-        .picker-wrapper {
-            position: absolute;
-            right: 20px;
-            top: -50px;
-            width: 220px;
-        }
     }
 
     .form-wrapper {
@@ -151,13 +143,17 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0 10px;
-            width: calc(100% / 4);
+            width: calc(100% / 5);
             &:last-of-type {
-                width: calc((100% / 4) - 16px);
+                width: calc((100% / 5) - 16px);
             }
 
             .el-form-item__content {
                 .el-select {
+                    width: 100%;
+                }
+
+                .el-date-editor--date {
                     width: 100%;
                 }
             }
