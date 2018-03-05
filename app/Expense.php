@@ -18,7 +18,7 @@ class Expense extends Model
      */
     public function expenseList($userId, $period)
     {
-        $expenceList = DB::table('expenses')
+        $expenseList = DB::table('expenses')
             ->join('categories', 'expenses.category_id', '=', 'categories.id')
             ->select('expenses.*', 'categories.name as category_name')
             ->where([
@@ -28,12 +28,12 @@ class Expense extends Model
             ->get();
 
         // 取得できない場合
-        if ($expenceList->isEmpty()) {
+        if ($expenseList->isEmpty()) {
             // TODO error messageを考える
             return response()->json(['message' => 'not data'], 201);
         }
 
-        return $expenceList;
+        return $expenseList;
     }
 
     /**
