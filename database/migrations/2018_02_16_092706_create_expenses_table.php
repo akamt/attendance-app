@@ -19,6 +19,7 @@ class CreateExpensesTable extends Migration
             $table->integer('value');
             $table->string('payment');
             $table->string('month');
+            $table->date('use_day');
             $table->integer('user_id');
             $table->integer('category_id');
             $table->timestamps();

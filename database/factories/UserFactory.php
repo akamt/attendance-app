@@ -26,6 +26,7 @@ $factory->define(App\User::class, function (Faker $faker) {
 
 $factory->define(App\Expense::class, function (Faker $faker) {
     $array = ['定期代', '書籍代', '営業接待', 'タクシー代', '宿泊費'];
+    $date = $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now');
     return [
         'name' => $faker->randomElement($array),
         'category_id' => $faker->randomDigitNotNull,
@@ -33,7 +34,8 @@ $factory->define(App\Expense::class, function (Faker $faker) {
             return factory(App\User::class)->create()->id;
         },
         'payment' => $faker->company,
-        'month' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now')->format('Y-m'),
+        'use_day' => $date->format('Y-m-d'),
+        'month' => $date->format('Y-m'),
         'value' => $faker->randomNumber(4),
     ];
 });
