@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Expense;
 
 class ExpenseController extends Controller
@@ -55,11 +56,11 @@ class ExpenseController extends Controller
     {
         $user = \JWTAuth::parseToken()->authenticate();
         $array = $request->forms;
-        $month = $request->period;
 
         foreach ($array as $item) {
-            $item['month'] = $month;
             $item['user_id'] = $user->id;
+            $item['use_day'] = Carbon::createFromFormat('Y-m-d', $item['date'])->format('Y-m-d');
+            $item['month'] = Carbon::createFromFormat('Y-m-d', $item['date'])->format('Y-m');
             $expense = new Expense($item);
             $expense->save();
         }
