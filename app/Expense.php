@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class Expense extends Model
 {
-    protected $fillable = ['name', 'value', 'payment', 'month', 'user_id', 'category_id'];
+    protected $fillable = ['name', 'value', 'payment', 'use_day', 'month', 'user_id', 'category_id'];
 
     /**
      * 経費の一覧を返す
