@@ -98,7 +98,10 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $expense = Expense::find($id);
+        $expense->fill($request->all())->save();
+
+        return response()->json('updated!', 200);
     }
 
     /**
