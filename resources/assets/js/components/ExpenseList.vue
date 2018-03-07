@@ -1,7 +1,7 @@
 <template>
     <el-main v-loading.fullscreen.lock="periodLoading">
         <div class="selector-wrapper">
-            <el-select v-model="period" @change="periodChange" clearable placeholder="対象月を選択">
+            <el-select v-model="period" @change="getList" clearable placeholder="対象月を選択">
                 <el-option
                         v-for="item in periodList"
                         :key="item.month"
@@ -112,7 +112,7 @@
             });
         },
         methods: {
-            periodChange() {
+            getList() {
                 let data = {
                     period: this.period
                 };
@@ -132,13 +132,17 @@
                 console.log(index, row);
             },
             deleteExpense(row) {
+                this.listLoading = true;
                 http.delete('expenses/' + row.id, null, res => {
                     console.log(res);
+                    this.getList();
                 });
             },
             updateExpense(row) {
+                this.listLoading = true;
                 http.put('expenses/' + row.id, row, res => {
                     console.log(res);
+                    this.getList();
                 });
             }
         }
