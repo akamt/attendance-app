@@ -93,13 +93,16 @@ class ExpenseController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $expense = Expense::find($id);
-        $expense->fill($request->all())->save();
+        $updateData = $request->updateData;
+
+        foreach ($updateData as $id => $value) {
+            $expense = Expense::find($id);
+            $expense->fill($value)->save();
+        }
 
         return response()->json('updated!', 200);
     }
