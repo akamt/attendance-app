@@ -1,5 +1,5 @@
 <template>
-    <el-main>
+    <el-main v-loading.fullscreen.lock="periodLoading">
         <div class="selector-wrapper">
             <el-select v-model="period" @change="periodChange" clearable placeholder="対象月を選択">
                 <el-option
@@ -10,7 +10,7 @@
                 </el-option>
             </el-select>
         </div>
-        <el-table v-loading="loading" class="tb-edit" :data="tableData" highlight-current-row
+        <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
                   @row-click="handleCurrentChange" style="width:100%;">
             <el-table-column label="日付" sortable width="220">
                 <template slot-scope="scope">
@@ -94,12 +94,16 @@
                 periodList: [],
                 period: '',
                 tableData: [],
-                loading: false
+                periodLoading: false,
+                listLoading: false
             }
         },
         created() {
+            this.periodLoading = true;
+
             // TODO 同時に行えるように
             http.get('period/list', res => {
+                this.periodLoading = false;
                 this.periodList = res.data
             });
 
@@ -113,10 +117,10 @@
                     period: this.period
                 };
 
-                this.loading = true;
+                this.listLoading = true;
                 http.post('expense/list', data, res => {
                     this.tableData = res.data;
-                    this.loading = false;
+                    this.listLoading = false;
                 }, error => {
                     console.log(error);
                 })
