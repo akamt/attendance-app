@@ -72,8 +72,12 @@
                     label="操作"
                     width="120">
                 <template slot-scope="scope">
-                    <el-button @click="updateExpense(scope.row)" type="text" size="small">Save</el-button>
-                    <el-button @click="deleteExpense" type="text" size="small">Delete</el-button>
+                    <el-button @click="updateExpense(scope.row)" type="text" size="small">
+                        Save
+                    </el-button>
+                    <el-button @click="deleteExpense(scope.row)" type="text" size="small">
+                        Delete
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -123,8 +127,10 @@
             handleEdit(index, row) {
                 console.log(index, row);
             },
-            deleteExpense() {
-                // TODO call API
+            deleteExpense(row) {
+                http.delete('expenses/' + row.id, null, res => {
+                    console.log(res);
+                });
             },
             updateExpense(row) {
                 http.put('expenses/' + row.id, row, res => {
