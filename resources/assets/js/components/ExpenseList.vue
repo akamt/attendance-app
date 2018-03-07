@@ -10,6 +10,11 @@
                 </el-option>
             </el-select>
         </div>
+        <div class="save-wrapper">
+            <el-button type="primary" v-if="Object.keys(editData).length !== 0" @click="updateExpense">
+                Save
+            </el-button>
+        </div>
         <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
                   @row-click="handleCurrentChange" style="width:100%;">
             <el-table-column label="日付" sortable width="220">
@@ -56,7 +61,8 @@
                     label="経費項目"
                     width="180">
                 <template slot-scope="scope">
-                    <el-select v-model="scope.row.category_id" placeholder="Select">
+                    <el-select v-model="scope.row.category_id" placeholder="Select"
+                               @change="handleEdit(scope.$index, scope.row)">
                         <el-option
                                 v-for="item in options"
                                 :key="item.name"
@@ -72,9 +78,6 @@
                     label="操作"
                     width="120">
                 <template slot-scope="scope">
-                    <el-button @click="updateExpense(scope.row)" type="text" size="small">
-                        Save
-                    </el-button>
                     <el-button @click="deleteExpense(scope.row)" type="text" size="small">
                         Delete
                     </el-button>
@@ -94,6 +97,7 @@
                 periodList: [],
                 period: '',
                 tableData: [],
+                editData: {},
                 periodLoading: false,
                 listLoading: false
             }
@@ -112,11 +116,16 @@
             });
         },
         methods: {
+            initialize() {
+                // 初期化
+                this.editData = {};
+            },
             getList() {
                 let data = {
                     period: this.period
                 };
 
+                this.initialize();
                 this.listLoading = true;
                 http.post('expense/list', data, res => {
                     this.tableData = res.data;
@@ -125,11 +134,15 @@
                     console.log(error);
                 })
             },
+            handleEdit(index, row) {
+                // 編集されたらデータを入れる
+                // this.editData[row.id] = row;
+
+                this.$set(this.editData, row.id, row);
+                console.log(index, row);
+            },
             handleCurrentChange(row, event, column) {
                 console.log(row, event, column, event.currentTarget)
-            },
-            handleEdit(index, row) {
-                console.log(index, row);
             },
             deleteExpense(row) {
                 this.listLoading = true;
@@ -138,9 +151,12 @@
                     this.getList();
                 });
             },
-            updateExpense(row) {
+            updateExpense() {
+                let updateData = {
+                    updateData: this.editData
+                };
                 this.listLoading = true;
-                http.put('expenses/' + row.id, row, res => {
+                http.put('expenses/update', updateData, res => {
                     console.log(res);
                     this.getList();
                 });
@@ -155,6 +171,12 @@
         right: 20px;
         top: 10px;
         width: 220px;
+    }
+
+    .save-wrapper {
+        position: absolute;
+        right: 250px;
+        top: 10px;
     }
 
     /* TODO scssに対応 */
