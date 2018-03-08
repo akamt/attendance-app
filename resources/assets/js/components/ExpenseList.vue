@@ -78,12 +78,24 @@
                     label="操作"
                     width="120">
                 <template slot-scope="scope">
-                    <el-button @click="deleteExpense(scope.row)" type="text" size="small">
+                    <el-button @click="confirmDelete(scope.row)" type="text" size="small">
                         Delete
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <el-dialog title="経費削除"
+                   :visible.sync="dialogVisible"
+                   width="50%">
+            <!-- TODO どの経費かわかるように -->
+            <span>選択した経費を削除しますか？</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="deleteExpense">
+                    Confirm
+                </el-button>
+            </span>
+        </el-dialog>
     </el-main>
 </template>
 
@@ -98,6 +110,8 @@
                 period: '',
                 tableData: [],
                 editData: {},
+                deleteData: {},
+                dialogVisible: false,
                 periodLoading: false,
                 listLoading: false
             }
@@ -144,9 +158,11 @@
             handleCurrentChange(row, event, column) {
                 console.log(row, event, column, event.currentTarget)
             },
-            deleteExpense(row) {
+            deleteExpense() {
+                this.dialogVisible = false;
                 this.listLoading = true;
-                http.delete('expenses/' + row.id, null, res => {
+                http.delete('expenses/' + this.deleteData.id, null, res => {
+                    this.deleteData = {};
                     console.log(res);
                     this.getList();
                 });
@@ -160,6 +176,10 @@
                     console.log(res);
                     this.getList();
                 });
+            },
+            confirmDelete(row) {
+                this.deleteData = row;
+                this.dialogVisible = true;
             }
         }
     }
