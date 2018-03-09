@@ -19,16 +19,16 @@
             </el-button>
         </div>
         <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
-                  @row-click="handleCurrentChange" style="width:100%;" ref="multipleTable"
-                  @selection-change="handleSelectionChange">
+                  @row-click="handleCurrentChange" style="width:100%;" @selection-change="handleSelectionChange">
             <el-table-column
                     type="selection"
                     width="55">
             </el-table-column>
-            <el-table-column label="日付" sortable width="220">
+            <el-table-column label="日付" sortable>
                 <template slot-scope="scope">
                     <el-date-picker v-model="scope.row.use_day" value-format="yyyy-MM-dd" type="date"
-                                    placeholder="対象日を選択" @change="handleEdit(scope.$index, scope.row)">
+                                    placeholder="対象日を選択" @change="handleEdit(scope.$index, scope.row)"
+                                    style="width:100%;">
                     </el-date-picker>
                     <span>{{ scope.row.use_day }}</span>
                 </template>
@@ -130,15 +130,6 @@
             });
         },
         methods: {
-            toggleSelection(rows) {
-                if (rows) {
-                    rows.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-            },
             handleSelectionChange(val) {
                 this.deleteData = val;
             },
