@@ -12,7 +12,7 @@ class RolesTableSeeder extends Seeder
     public function run()
     {
         $roles = [
-            '管理者', '一般'
+            'admin', 'group-admin', 'read-only', 'personal'
         ];
 
         foreach ($roles as $role) {
