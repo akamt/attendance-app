@@ -110,13 +110,17 @@ class ExpenseController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $expense = Expense::find($id);
-        $expense->delete();
+        $deleteData = $request->deleteData;
+
+        foreach ($deleteData as $value) {
+            $expense = Expense::find($value['id']);
+            $expense->delete();
+        }
 
         return response()->json('deleted!', 200);
     }
