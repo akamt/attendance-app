@@ -145,6 +145,7 @@
             initialize() {
                 // 初期化
                 this.editData = {};
+                this.deleteData = {};
             },
             getList() {
                 let data = {
@@ -178,7 +179,6 @@
                     deleteData: this.deleteData
                 };
                 http.delete('expenses', deleteData, res => {
-                    this.deleteData = {};
                     this.$message('削除しました');
                     this.getList();
                 });
