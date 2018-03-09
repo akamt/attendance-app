@@ -20,6 +20,9 @@
         </div>
         <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
                   @row-click="handleCurrentChange" style="width:100%;" @selection-change="handleSelectionChange">
+            <span slot="empty">
+                対象月を選択
+            </span>
             <el-table-column
                     type="selection"
                     width="55">
