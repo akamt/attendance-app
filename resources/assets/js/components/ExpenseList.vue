@@ -10,13 +10,21 @@
                 </el-option>
             </el-select>
         </div>
-        <div class="save-wrapper">
-            <el-button type="primary" v-if="Object.keys(editData).length !== 0" @click="updateExpense">
+        <div class="button-area">
+            <el-button type="primary" :disabled="Object.keys(editData).length === 0" @click="updateExpense">
                 Save
+            </el-button>
+            <el-button type="danger" :disabled="deleteData.length === 0" @click="confirmDelete">
+                Delete
             </el-button>
         </div>
         <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
-                  @row-click="handleCurrentChange" style="width:100%;">
+                  @row-click="handleCurrentChange" style="width:100%;" ref="multipleTable"
+                  @selection-change="handleSelectionChange">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
             <el-table-column label="日付" sortable width="220">
                 <template slot-scope="scope">
                     <el-date-picker v-model="scope.row.use_day" value-format="yyyy-MM-dd" type="date"
@@ -73,27 +81,12 @@
                     <span>{{ scope.row.category_name }}</span>
                 </template>
             </el-table-column>
-            <el-table-column
-                    fixed="right"
-                    label="操作"
-                    width="120">
-                <template slot-scope="scope">
-                    <el-button @click="confirmDelete(scope.row)" type="text" size="small">
-                        Delete
-                    </el-button>
-                </template>
-            </el-table-column>
         </el-table>
-        <el-dialog title="経費削除"
-                   :visible.sync="dialogVisible"
-                   width="50%">
-            <!-- TODO どの経費かわかるように -->
+        <el-dialog title="経費削除" :visible.sync="dialogVisible" width="80%">
             <span>選択した経費を削除しますか？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="deleteExpense">
-                    Confirm
-                </el-button>
+                <el-button type="danger" @click="deleteExpense">Confirm</el-button>
             </span>
         </el-dialog>
     </el-main>
@@ -110,7 +103,7 @@
                 period: '',
                 tableData: [],
                 editData: {},
-                deleteData: {},
+                deleteData: [],
                 dialogVisible: false,
                 periodLoading: false,
                 listLoading: false
@@ -130,6 +123,18 @@
             });
         },
         methods: {
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            handleSelectionChange(val) {
+                this.deleteData = val;
+            },
             initialize() {
                 // 初期化
                 this.editData = {};
@@ -161,7 +166,11 @@
             deleteExpense() {
                 this.dialogVisible = false;
                 this.listLoading = true;
-                http.delete('expenses/' + this.deleteData.id, null, res => {
+
+                let deleteData = {
+                    deleteData: this.deleteData
+                };
+                http.delete('expenses', deleteData, res => {
                     this.deleteData = {};
                     console.log(res);
                     this.getList();
@@ -177,8 +186,7 @@
                     this.getList();
                 });
             },
-            confirmDelete(row) {
-                this.deleteData = row;
+            confirmDelete() {
                 this.dialogVisible = true;
             }
         }
@@ -193,10 +201,12 @@
         width: 220px;
     }
 
-    .save-wrapper {
+    .button-area {
         position: absolute;
         right: 250px;
         top: 10px;
+        display: flex;
+        align-items: center;
     }
 
     /* TODO scssに対応 */
