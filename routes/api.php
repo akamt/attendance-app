@@ -31,5 +31,6 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::post('expense/list', 'ExpenseController@getExpenseList');
 
         Route::put('expenses/update', 'ExpenseController@update');
+        Route::delete('expenses', 'ExpenseController@destroy');
     });
 });
