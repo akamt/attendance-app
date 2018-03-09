@@ -179,7 +179,7 @@
                 };
                 http.delete('expenses', deleteData, res => {
                     this.deleteData = {};
-                    console.log(res);
+                    this.$message('削除しました');
                     this.getList();
                 });
             },
@@ -189,7 +189,10 @@
                 };
                 this.listLoading = true;
                 http.put('expenses/update', updateData, res => {
-                    console.log(res);
+                    this.$message({
+                        message: '保存しました',
+                        type: 'success'
+                    });
                     this.getList();
                 });
             },
