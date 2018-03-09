@@ -14,19 +14,21 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\User::class, function (Faker $faker) {
-    $array = [1, 2];
+    $roles = [1, 2, 3, 4];
+    $groups = [1, 2];
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => bcrypt('secret'),
-        'role_id' => $faker->randomElement($array),
+        'role_id' => $faker->randomElement($roles),
+        'group_id' => $faker->randomElement($groups),
         'remember_token' => str_random(10),
     ];
 });
 
 $factory->define(App\Expense::class, function (Faker $faker) {
     $array = ['定期代', '書籍代', '営業接待', 'タクシー代', '宿泊費'];
-    $date = $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now');
+    $date = $faker->dateTimeBetween($startDate = '-1 month', $endDate = 'now');
     return [
         'name' => $faker->randomElement($array),
         'category_id' => $faker->randomDigitNotNull,
