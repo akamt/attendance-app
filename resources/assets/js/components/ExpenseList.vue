@@ -84,9 +84,16 @@
         </el-table>
         <el-dialog title="経費削除" :visible.sync="dialogVisible" width="80%">
             <span>選択した経費を削除しますか？</span>
+            <el-table :data="deleteData">
+                <el-table-column property="use_day" label="日付"></el-table-column>
+                <el-table-column property="name" label="経費名"></el-table-column>
+                <el-table-column property="payment" label="支払先"></el-table-column>
+                <el-table-column property="category_name" label="経費項目"></el-table-column>
+                <el-table-column property="value" label="値段"></el-table-column>
+            </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="danger" @click="deleteExpense">Confirm</el-button>
+                <el-button type="danger" @click="deleteExpense">Delete</el-button>
             </span>
         </el-dialog>
     </el-main>
