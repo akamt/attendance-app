@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Expense;
 
@@ -26,24 +25,26 @@ class ExpenseController extends Controller
     /**
      * 期間の一覧を返す
      *
+     * @param integer $userId
      * @return \Illuminate\Support\Collection
      */
-    public function getPeriodList()
+    public function getPeriod($userId)
     {
-        $user = \JWTAuth::parseToken()->authenticate();
         $expense = new Expense();
-
-        return $expense->expensePeriodList($user->id);
+        return $expense->periodList($userId);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 経費一覧を返す
      *
-     * @return \Illuminate\Http\Response
+     * @param $userId
+     * @param $period
+     * @return \Illuminate\Support\Collection
      */
-    public function create()
+    public function getExpenses($userId, $period)
     {
-        //
+        $expense = new Expense();
+        return $expense->getList($userId, $period);
     }
 
     /**
@@ -68,35 +69,15 @@ class ExpenseController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     * @param integer $userId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $userId)
     {
+        // TODO userIdでガード処理入れる？
         $updateData = $request->updateData;
 
         foreach ($updateData as $id => $value) {
