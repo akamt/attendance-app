@@ -25,12 +25,19 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::get('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
         Route::resource('categories', 'CategoryController');
-        Route::resource('expenses', 'ExpenseController');
-
-        Route::get('period/list', 'ExpenseController@getPeriodList');
-        Route::post('expense/list', 'ExpenseController@getExpenseList');
 
         Route::put('expenses/update', 'ExpenseController@update');
         Route::delete('expenses', 'ExpenseController@destroy');
+
+        Route::get('users/{id}/period', 'ExpenseController@getPeriod');
+        Route::get('users/{id}/expenses/{period}', 'ExpenseController@getExpenses');
+
+        Route::post('users/{id}/expenses', 'ExpenseController@store');
+        Route::put('users/{id}/expenses', 'ExpenseController@update');
+
+        // 管理者でしか叩け無いAPI
+        Route::group(['middleware' => ['can:admin']], function () {
+            Route::get('users', 'UserController@index');
+        });
     });
 });
