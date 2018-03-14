@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use DB;
 
 class Expense extends Model
 {
@@ -16,7 +16,7 @@ class Expense extends Model
      * @param string $period
      * @return \Illuminate\Support\Collection
      */
-    public function expenseList($userId, $period)
+    public function getList($userId, $period)
     {
         $expenseList = DB::table('expenses')
             ->join('categories', 'expenses.category_id', '=', 'categories.id')
@@ -42,7 +42,7 @@ class Expense extends Model
      * @param integer $userId
      * @return \Illuminate\Support\Collection
      */
-    public function expensePeriodList($userId)
+    public function periodList($userId)
     {
         $periodList = DB::table('expenses')
             ->distinct()
@@ -50,6 +50,12 @@ class Expense extends Model
             ->where('user_id', '=', $userId)
             ->orderBy('month', 'asc')
             ->get();
+
+        // 取得できない場合
+        if ($periodList->isEmpty()) {
+            // TODO error messageを考える
+            return response()->json(['message' => 'not data'], 201);
+        }
 
         return $periodList;
     }
