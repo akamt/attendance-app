@@ -5,6 +5,7 @@ namespace App;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use DB;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -46,6 +47,36 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * 部下の一覧を取得
+     * 
+     * @param $roleId
+     * @param $groupId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserList($roleId, $groupId)
+    {
+        // TODO この実装でいいのか確認
+        if ($roleId === 1 || $roleId === 3) {
+            $userList = DB::table('users')
+                ->select('users.*')
+                ->get();
+        } elseif ($roleId === 2) {
+            $userList = DB::table('users')
+                ->select('users.*')
+                ->where('group_id', '=', $groupId)
+                ->get();
+        }
+
+        // 取得できない場合
+        if ($userList->isEmpty()) {
+            // TODO error messageを考える
+            return response()->json(['message' => 'not data'], 201);
+        }
+
+        return $userList;
     }
 
     public function role()
