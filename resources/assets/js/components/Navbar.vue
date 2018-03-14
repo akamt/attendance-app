@@ -15,6 +15,9 @@
         <el-menu-item v-if="userStatus.authenticated" @click="toCategory" index="/category">
             カテゴリー
         </el-menu-item>
+        <el-menu-item v-if="userStatus.authenticated && role_status" @click="toUsers" index="/users">
+            ユーザーリスト
+        </el-menu-item>
         <el-menu-item v-if="!userStatus.authenticated" @click="toLogin" index="/login">
             Login
         </el-menu-item>
@@ -39,6 +42,12 @@
             link() {
                 // TODO nav store
                 return this.$route.path;
+            },
+            role_status() {
+                // 管理者権限があるか
+
+                let role = this.userStatus.user.role_id;
+                return role === 1 || role === 2 || role === 3
             }
         },
         methods: {
@@ -56,6 +65,9 @@
             },
             toCategory() {
                 this.$router.push('category')
+            },
+            toUsers() {
+                this.$router.push('users')
             },
             toLogin() {
                 this.$router.push('login')
