@@ -93,7 +93,7 @@
                 this.forms.push({
                     date: '',
                     name: '',
-                    kind: 1,
+                    category_id: 1,
                     value: 0,
                     payment: ''
                 });
@@ -123,7 +123,11 @@
 <style lang="scss">
     .el-header {
         align-items: center;
+        border-bottom: 1px solid #ebeef5;
+        color: #909399;
         display: flex;
+        font-size: 14px;
+        font-weight: bold;
         position: relative;
 
         > span {
