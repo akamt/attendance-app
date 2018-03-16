@@ -34,7 +34,7 @@
         },
         methods: {
             toList(id) {
-                this.$router.push('users/' + id + '/expenses');
+                this.$router.push('users/' + id + '/list');
             }
         }
     }
