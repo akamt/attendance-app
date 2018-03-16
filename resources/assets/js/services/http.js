@@ -50,7 +50,11 @@ export default {
             return response
         }, error => {
             // Also, if we receive a Bad Request / Unauthorized error
-            // console.log(error);
+            let statusCode = error.response.status;
+
+            if (statusCode === 405 || statusCode === 403 || statusCode === 404) {
+                window.location.href = '/';
+            }
             return Promise.reject(error)
         })
     }
