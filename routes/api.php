@@ -26,11 +26,8 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::post('refresh', 'AuthController@refresh');
         Route::resource('categories', 'CategoryController');
 
-        Route::put('expenses/update', 'ExpenseController@update');
-        Route::delete('expenses', 'ExpenseController@destroy');
-
         Route::get('users/{id}/period', 'ExpenseController@getPeriod');
-        Route::get('users/{id}/expenses/{period}', 'ExpenseController@getExpenses');
+        Route::get('users/{id}/expenses/{period}', 'ExpenseController@show');
 
         Route::post('users/{id}/expenses', 'ExpenseController@store');
         Route::put('users/{id}/expenses', 'ExpenseController@update');
