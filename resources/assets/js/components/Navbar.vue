@@ -29,7 +29,6 @@
 
 <script>
     import userStore from '../stores/userStore'
-    import http from '../services/http'
 
     export default {
         data() {
@@ -61,7 +60,7 @@
                 this.$router.push('expense')
             },
             toExpenseList() {
-                this.$router.push('list')
+                this.$router.push('users/' + this.userStatus.user.id + '/list')
             },
             toCategory() {
                 this.$router.push('category')
