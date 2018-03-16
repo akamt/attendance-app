@@ -31,6 +31,7 @@ Route::group(['middleware' => 'api'], function ($router) {
 
         Route::post('users/{id}/expenses', 'ExpenseController@store');
         Route::put('users/{id}/expenses', 'ExpenseController@update');
+        Route::delete('users/{id}/expenses', 'ExpenseController@destroy');
 
         // 管理者でしか叩け無いAPI
         Route::group(['middleware' => ['can:admin']], function () {
