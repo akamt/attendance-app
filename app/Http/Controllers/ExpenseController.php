@@ -84,16 +84,18 @@ class ExpenseController extends Controller
      */
     public function store($userId, Request $request)
     {
-        $expenses = $request->forms;
-
-        foreach ($expenses as $item) {
-            $item['user_id'] = $userId;
-            $item['use_day'] = Carbon::createFromFormat('Y-m-d', $item['date'])->format('Y-m-d');
-            $item['month'] = Carbon::createFromFormat('Y-m-d', $item['date'])->format('Y-m');
-            $expense = new Expense($item);
-            $expense->save();
+        if ($this->isAdmin($userId)) {
+            $expenses = $request->forms;
+            foreach ($expenses as $item) {
+                $item['user_id'] = $userId;
+                $item['use_day'] = Carbon::createFromFormat('Y-m-d', $item['date'])->format('Y-m-d');
+                $item['month'] = Carbon::createFromFormat('Y-m-d', $item['date'])->format('Y-m');
+                $expense = new Expense($item);
+                $expense->save();
+            }
+        } else {
+            return response()->json(['message' => 'non admin'], 405);
         }
-        return response()->json('created!', 205);
     }
 
     /**
@@ -105,32 +107,34 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, $userId)
     {
-        // TODO userIdでガード処理入れる？
-        $updateData = $request->updateData;
-
-        foreach ($updateData as $id => $value) {
-            $expense = Expense::find($id);
-            $expense->fill($value)->save();
+        if ($this->isAdmin($userId)) {
+            $updateData = $request->updateData;
+            foreach ($updateData as $id => $value) {
+                $expense = Expense::find($id);
+                $expense->fill($value)->save();
+            }
+        } else {
+            return response()->json(['message' => 'non admin'], 405);
         }
-
-        return response()->json('updated!', 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param integer $userId
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $userId)
     {
-        $deleteData = $request->deleteData;
-
-        foreach ($deleteData as $value) {
-            $expense = Expense::find($value['id']);
-            $expense->delete();
+        if ($this->isAdmin($userId)) {
+            $deleteData = $request->deleteData;
+            foreach ($deleteData as $value) {
+                $expense = Expense::find($value['id']);
+                $expense->delete();
+            }
+        } else {
+            return response()->json(['message' => 'non admin'], 405);
         }
-
-        return response()->json('deleted!', 200);
     }
 }
