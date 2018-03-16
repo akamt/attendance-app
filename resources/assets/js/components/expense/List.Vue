@@ -173,7 +173,10 @@
                 let deleteData = {
                     deleteData: this.deleteData
                 };
-                http.delete('expenses', deleteData, res => {
+
+                let apiUrl = 'users/' + this.user_id + '/expenses';
+
+                http.delete(apiUrl, deleteData, res => {
                     this.$message('削除しました');
                     this.getList();
                 });
