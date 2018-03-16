@@ -57,6 +57,7 @@
 <script>
     import http from '../services/http'
     import ElContainer from "element-ui/packages/container/src/main";
+    import userStore from '../stores/userStore'
 
     export default {
         components: {ElContainer},
@@ -71,7 +72,8 @@
                         payment: ''
                     }
                 ],
-                options: []
+                options: [],
+                userStatus: userStore.state
             }
         },
         computed: {
@@ -112,7 +114,9 @@
                     period: this.period
                 };
 
-                http.post('expenses', data, res => {
+                let apiUrl = 'users/' + this.userStatus.user.id + '/expenses';
+
+                http.post(apiUrl, data, res => {
                     console.log(res);
                 })
             }
