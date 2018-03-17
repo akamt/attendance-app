@@ -2,9 +2,9 @@
     <el-main>
         <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
                   style="width:100%;">
-            <!--<span slot="empty">-->
-            <!--対象月を選択-->
-            <!--</span>-->
+            <span slot="empty">
+                ユーザーがいません
+            </span>
             <el-table-column
                     prop="name"
                     label="名前"
@@ -23,12 +23,14 @@
     export default {
         data() {
             return {
-                tableData: []
+                tableData: [],
+                listLoading: false
             }
         },
         created() {
+            this.listLoading = true;
             http.get('users', res => {
-                console.log(res);
+                this.listLoading = false;
                 this.tableData = res.data;
             });
         },
