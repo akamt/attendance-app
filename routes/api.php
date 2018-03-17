@@ -24,8 +24,9 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::get('me', 'AuthController@me');
         Route::get('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
-        Route::resource('categories', 'CategoryController');
 
+        Route::get('categories', 'CategoryController@index');
+        Route::post('categories', 'CategoryController@store');
         Route::get('users/{id}/period', 'ExpenseController@getPeriod');
         Route::get('users/{id}/expenses/{period}', 'ExpenseController@show');
 
