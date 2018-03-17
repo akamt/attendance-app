@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <el-container v-loading="categoryLoading">
         <el-header height="50px">
             <span>日付</span>
             <span>経費名</span>
@@ -71,6 +71,7 @@
                     }
                 ],
                 options: [],
+                categoryLoading: false,
                 userStatus: userStore.state
             }
         },
@@ -102,8 +103,10 @@
                 this.forms.splice(index, 1);
             },
             fetchCategory() {
+                this.categoryLoading = true;
                 http.get('categories', res => {
                     this.options = res.data;
+                    this.categoryLoading = false;
                 })
             },
             add() {
