@@ -56,11 +56,9 @@
 
 <script>
     import http from '../services/http'
-    import ElContainer from "element-ui/packages/container/src/main";
     import userStore from '../stores/userStore'
 
     export default {
-        components: {ElContainer},
         data() {
             return {
                 forms: [
