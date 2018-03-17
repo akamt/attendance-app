@@ -3,7 +3,7 @@
         <el-menu-item @click="toTop" index="/">
             TOP
         </el-menu-item>
-        <el-submenu v-if="userStatus.authenticated">
+        <el-submenu v-if="userStatus.authenticated" index="expense">
             <template slot="title">経費</template>
             <el-menu-item @click="toRegister" index="/register">
                 経費登録
