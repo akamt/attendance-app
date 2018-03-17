@@ -7,7 +7,8 @@ export default new VueRouter({
     mode: 'history',
     routes: [
         {path: '/', component: require('./components/Index.vue')},
-        {path: '/expense', component: require('./components/Expense.vue')},
+        {path: '/register', component: require('./components/Expense.vue')},
+        {path: '/list', component: require('./components/ExpenseList')},
         {path: '/category', component: require('./components/Category.vue')},
         {path: '/users', component: require('./components/UserList.vue')},
         {path: '/users/:id/list', component: require('./components/UserExpenseList')},
