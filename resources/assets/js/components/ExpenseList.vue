@@ -1,13 +1,16 @@
 <template>
-    <expenseList :user_id="$route.params.id"></expenseList>
+    <expenseList :user_id="String(userStatus.user.id)"></expenseList>
 </template>
 
 <script>
     import expenseList from './expense/List'
+    import userStore from '../stores/userStore'
 
     export default {
         data() {
-            return {}
+            return {
+                userStatus: userStore.state
+            }
         },
         components: {
             expenseList
