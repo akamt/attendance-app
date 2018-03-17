@@ -3,16 +3,16 @@
         <el-menu-item @click="toTop" index="/">
             TOP
         </el-menu-item>
-        <el-submenu v-if="userStatus.authenticated" index="/expense">
+        <el-submenu v-if="userStatus.authenticated">
             <template slot="title">経費</template>
-            <el-menu-item @click="toExpense" index="/expense">
+            <el-menu-item @click="toRegister" index="/register">
                 経費登録
             </el-menu-item>
             <el-menu-item @click="toExpenseList" index="/list">
                 経費一覧
             </el-menu-item>
         </el-submenu>
-        <el-menu-item v-if="userStatus.authenticated" @click="toCategory" index="/category">
+        <el-menu-item v-if="userStatus.authenticated && role_status" @click="toCategory" index="/category">
             カテゴリー
         </el-menu-item>
         <el-menu-item v-if="userStatus.authenticated && role_status" @click="toUsers" index="/users">
@@ -56,11 +56,11 @@
             toTop() {
                 this.$router.push('/')
             },
-            toExpense() {
-                this.$router.push('expense')
+            toRegister() {
+                this.$router.push('register')
             },
             toExpenseList() {
-                this.$router.push('users/' + this.userStatus.user.id + '/list')
+                this.$router.push('/list')
             },
             toCategory() {
                 this.$router.push('category')
