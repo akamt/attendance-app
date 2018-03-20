@@ -10,16 +10,10 @@
                 </el-option>
             </el-select>
         </div>
-        <div class="button-area">
-            <el-button type="primary" :disabled="Object.keys(editData).length === 0" @click="updateExpense">
-                Save
-            </el-button>
-            <el-button type="danger" :disabled="deleteData.length === 0" @click="confirmDelete">
-                Delete
-            </el-button>
-        </div>
+
         <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
-                  @row-click="handleCurrentChange" style="width:100%;" @selection-change="handleSelectionChange">
+                  @row-click="handleCurrentChange" height="calc(100% - 50px)" @selection-change="handleSelectionChange"
+                  :default-sort="{prop: 'use_day', order: 'descending'}">
             <span slot="empty">
                 対象月を選択
             </span>
@@ -27,7 +21,10 @@
                     type="selection"
                     width="55">
             </el-table-column>
-            <el-table-column label="日付" sortable>
+            <el-table-column
+                    label="日付"
+                    prop="use_day"
+                    sortable>
                 <template slot-scope="scope">
                     <el-date-picker v-model="scope.row.use_day" value-format="yyyy-MM-dd" type="date"
                                     placeholder="対象日を選択" @change="handleEdit(scope.$index, scope.row)"
@@ -38,8 +35,7 @@
             </el-table-column>
             <el-table-column
                     prop="name"
-                    label="経費名"
-                    width="180">
+                    label="経費名">
                 <template slot-scope="scope">
                     <el-input v-model="scope.row.name" placeholder="経費名"
                               @change="handleEdit(scope.$index, scope.row)">
@@ -59,7 +55,8 @@
             </el-table-column>
             <el-table-column
                     prop="value"
-                    label="値段">
+                    label="値段"
+                    sortable>
                 <template slot-scope="scope">
                     <el-input v-model.number="scope.row.value" placeholder="値段"
                               @change="handleEdit(scope.$index, scope.row)">
@@ -69,8 +66,7 @@
             </el-table-column>
             <el-table-column
                     prop="category_name"
-                    label="経費項目"
-                    width="180">
+                    label="経費項目">
                 <template slot-scope="scope">
                     <el-select v-model="scope.row.category_id" placeholder="Select"
                                @change="handleEdit(scope.$index, scope.row)">
@@ -85,6 +81,28 @@
                 </template>
             </el-table-column>
         </el-table>
+
+        <el-row type="flex" :gutter="20" justify="space-around">
+            <el-col :span="8">
+                <div class="grid-content">
+                    合計金額
+                    ¥
+                    {{ total_value }}
+                </div>
+            </el-col>
+            <el-col :span="10" :offset="2">
+                <div class="grid-content">
+                    <el-button type="primary" :disabled="Object.keys(editData).length === 0" @click="updateExpense">
+                        保存
+                    </el-button>
+                    <el-button class="delete-button" type="danger" :disabled="deleteData.length === 0"
+                               @click="confirmDelete">
+                        削除
+                    </el-button>
+                </div>
+            </el-col>
+        </el-row>
+
         <el-dialog title="経費削除" :visible.sync="dialogVisible" width="80%">
             <span>選択した経費を削除しますか？</span>
             <el-table :data="deleteData">
@@ -120,6 +138,20 @@
                 dialogVisible: false,
                 periodLoading: false,
                 listLoading: false
+            }
+        },
+        computed: {
+            total_value() {
+                let total = 0;
+
+                this.tableData.forEach((item) => {
+                    if (Number(item.value) > 0) {
+                        total += item.value;
+                    }
+                });
+
+                // 3桁区切りで返す
+                return String(total).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
             }
         },
         created() {
@@ -196,6 +228,13 @@
                         type: 'success'
                     });
                     this.getList();
+                }, error => {
+                    // TODO error handling
+                    this.$message({
+                        message: 'error',
+                        type: 'error'
+                    });
+                    this.getList();
                 });
             },
             confirmDelete() {
@@ -210,15 +249,20 @@
         position: absolute;
         right: 20px;
         top: 10px;
-        width: 220px;
     }
 
-    .button-area {
-        position: absolute;
-        right: 250px;
-        top: 10px;
-        display: flex;
+    .el-row {
+        box-sizing: border-box;
+        height: 50px;
+        padding-top: 10px;
+    }
+
+    .grid-content {
         align-items: center;
+        color: #909399;
+        display: flex;
+        height: 100%;
+        justify-content: center;
     }
 
     /* TODO scssに対応 */
