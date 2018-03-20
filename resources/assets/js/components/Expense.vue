@@ -191,9 +191,6 @@
     }
 
     .el-main {
-        height: 100%;
-        box-sizing: border-box;
-
         .form-wrapper {
             max-height: calc(100% - #{$header-height} - #{$add-area-height} - #{$register-area-height} - (#{$margin-height} * 2));
             overflow: scroll;

@@ -16,6 +16,11 @@ body {
 
     .container {
       height: calc(100% - #{$navbar-height});
+
+      .el-main {
+        height: 100%;
+        box-sizing: border-box;
+      }
     }
   }
 }
