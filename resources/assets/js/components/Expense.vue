@@ -17,19 +17,19 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item prop="name">
-                    <el-input placeholder="経費名" v-model="form.name" clearable>
+                    <el-input placeholder="経費名" v-model="form.name">
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="value">
-                    <el-input v-model.number="form.value">
+                    <el-input v-model.number="form.value" placeholder="金額">
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="payment">
-                    <el-input placeholder="支払先" v-model="form.payment" clearable>
+                    <el-input placeholder="支払先" v-model="form.payment">
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="category">
-                    <el-select v-model="form.category_id" placeholder="種類を選択">
+                    <el-select v-model="form.category_id" placeholder="種類">
                         <el-option
                                 v-for="item in options"
                                 :key="item.id"
@@ -55,7 +55,9 @@
                 ¥
                 {{ total_value }}
             </span>
-            <el-button type="primary" @click="validate">Register</el-button>
+            <el-button type="primary" @click="validate">
+                保存
+            </el-button>
         </div>
     </el-main>
 </template>
@@ -114,13 +116,19 @@
             this.fetchCategory();
         },
         methods: {
+            initialize() {
+                // formを初期化
+                this.forms = [{category_id: 1, date: '', name: '', payment: '', value: ''}];
+                // reset validate
+                this.$refs[`dynamicFieldsForm0`][0].resetFields();
+            },
             addForm() {
                 this.forms.push({
                     category_id: 1,
                     date: '',
                     name: '',
                     payment: '',
-                    value: 0
+                    value: ''
                 });
             },
             deleteForm(index) {
@@ -158,8 +166,11 @@
 
                 let apiUrl = 'users/' + this.userStatus.user.id + '/expenses';
                 http.post(apiUrl, data, res => {
-                    // formを初期化
-                    this.forms = [{category_id: 1, date: '', name: '', payment: '', value: ''}];
+                    this.$message({
+                        message: '保存しました',
+                        type: 'success'
+                    });
+                    this.initialize();
                 })
             }
         }
