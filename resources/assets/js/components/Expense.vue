@@ -1,5 +1,5 @@
 <template>
-    <el-container v-loading="categoryLoading">
+    <el-main v-loading="categoryLoading">
         <el-header height="50px">
             <span>日付</span>
             <span>経費名</span>
@@ -7,51 +7,55 @@
             <span>支払先</span>
             <span>種類</span>
         </el-header>
-        <el-main>
-            <el-form @keyup.enter.native="add">
-                <div class="form-wrapper" v-for="(form, index) in forms">
-                    <el-form-item>
-                        <el-date-picker v-model="form.date" value-format="yyyy-MM-dd" type="date"
-                                        placeholder="対象日を選択">
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input placeholder="経費名" v-model="form.name" clearable>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input type="number" placeholder="金額" v-model.number="form.value" clearable>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input placeholder="支払先" v-model="form.payment" clearable>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-select v-model="form.category_id" clearable placeholder="Select">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.name"
-                                    :label="item.name"
-                                    :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <i v-if="index >=1" class="el-icon-circle-close" @click="deleteForm(index)">
-                    </i>
-                </div>
-                <div class="add-item-area">
-                    <el-button icon="el-icon-circle-plus" @click="addForm">
-                        項目追加
-                    </el-button>
-                </div>
-            </el-form>
-            <div class="total-value-area">
+
+        <el-form :model="form" :rules="rules" v-for="(form, index) in forms" :key="index"
+                 :ref="`dynamicFieldsForm${index}`">
+            <el-form-item prop="date">
+                <el-date-picker v-model="form.date" value-format="yyyy-MM-dd" type="date"
+                                placeholder="対象日を選択">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item prop="name">
+                <el-input placeholder="経費名" v-model="form.name" clearable>
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="value">
+                <el-input v-model.number="form.value">
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="payment">
+                <el-input placeholder="支払先" v-model="form.payment" clearable>
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="category">
+                <el-select v-model="form.category_id" placeholder="種類を選択">
+                    <el-option
+                            v-for="item in options"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <i v-if="index >=1" class="el-icon-circle-close" @click="deleteForm(index)">
+            </i>
+        </el-form>
+
+        <div class="add-item-area">
+            <el-button icon="el-icon-circle-plus" @click="addForm">
+                項目追加
+            </el-button>
+        </div>
+
+        <div class="total-value-area">
+            <span>
+                合計金額
+                ¥
                 {{ total_value }}
-            </div>
-            <el-button type="primary" @click="add">Register</el-button>
-        </el-main>
-    </el-container>
+            </span>
+            <el-button type="primary" @click="validate">Register</el-button>
+        </div>
+    </el-main>
 </template>
 
 <script>
@@ -63,14 +67,29 @@
             return {
                 forms: [
                     {
+                        category_id: 1,
                         date: '',
                         name: '',
-                        category_id: 1,
-                        value: 0,
-                        payment: ''
+                        payment: '',
+                        value: ''
                     }
                 ],
-                options: [],
+                rules: {
+                    date: [
+                        {required: true, message: '支払日を選択してください', trigger: 'change'}
+                    ],
+                    name: [
+                        {required: true, message: '経費名を入力してください', trigger: 'change', whitespace: true}
+                    ],
+                    value: [
+                        {required: true, message: '金額を入力してください', trigger: 'blur'},
+                        {type: 'number', message: '数値で入力してください'}
+                    ],
+                    payment: [
+                        {required: true, message: '支払先を入力してください', trigger: 'change', whitespace: true}
+                    ]
+                },
+                options: {},
                 categoryLoading: false,
                 userStatus: userStore.state
             }
@@ -80,10 +99,13 @@
                 let total = 0;
 
                 this.forms.forEach((item) => {
-                    total += item.value;
+                    if (Number(item.value) > 0) {
+                        total += item.value;
+                    }
                 });
 
-                return total;
+                // 3桁区切りで返す
+                return String(total).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
             }
         },
         created() {
@@ -92,11 +114,11 @@
         methods: {
             addForm() {
                 this.forms.push({
+                    category_id: 1,
                     date: '',
                     name: '',
-                    category_id: 1,
-                    value: 0,
-                    payment: ''
+                    payment: '',
+                    value: 0
                 });
             },
             deleteForm(index) {
@@ -109,16 +131,33 @@
                     this.categoryLoading = false;
                 })
             },
-            add() {
+            validate() {
+                let validCount = 0;
+                const formAmount = this.forms.length;
+
+                this.forms.forEach((form, index) => {
+                    this.$refs[`dynamicFieldsForm${index}`][0].validate(valid => {
+                        if (valid) {
+                            validCount++;
+                        }
+                    });
+                });
+
+                // form数とvalidateが通った回数を比較
+                if (formAmount === validCount) {
+                    this.register();
+                }
+            },
+            register() {
                 let data = {
                     forms: this.forms,
                     period: this.period
                 };
 
                 let apiUrl = 'users/' + this.userStatus.user.id + '/expenses';
-
                 http.post(apiUrl, data, res => {
-                    console.log(res);
+                    // formを初期化
+                    this.forms = [{category_id: 1, date: '', name: '', payment: '', value: ''}];
                 })
             }
         }
@@ -133,6 +172,7 @@
         display: flex;
         font-size: 14px;
         font-weight: bold;
+        margin-bottom: 10px;
         position: relative;
 
         > span {
@@ -142,10 +182,10 @@
         }
     }
 
-    .form-wrapper {
+    .el-form {
         align-items: center;
         display: flex;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         position: relative;
 
         .el-form-item {
@@ -181,7 +221,12 @@
     }
 
     .total-value-area {
-        display: flex;
         align-items: center;
+        border-top: 1px solid #ebeef5;
+        color: #909399;
+        display: flex;
+        justify-content: space-around;
+        margin: 10px 0;
+        padding: 10px 0;
     }
 </style>
