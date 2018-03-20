@@ -1,17 +1,17 @@
 <template>
     <el-main>
-        <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
-                  style="width:100%;">
+        <el-table v-loading="listLoading" :data="tableData" highlight-current-row height="100%"
+                  @current-change="handleCurrentChange">
             <span slot="empty">
                 ユーザーがいません
             </span>
             <el-table-column
+                    fixed
+                    type="index">
+            </el-table-column>
+            <el-table-column
                     prop="name"
-                    label="名前"
-                    width="180">
-                <template slot-scope="scope">
-                    <span @click="toList(scope.row.id)">{{ scope.row.name }}</span>
-                </template>
+                    label="名前">
             </el-table-column>
         </el-table>
     </el-main>
@@ -35,11 +35,15 @@
             });
         },
         methods: {
-            toList(id) {
-                this.$router.push('users/' + id + '/list');
+            handleCurrentChange(row) {
+                this.$router.push('users/' + row.id + '/list');
             }
         }
     }
 </script>
 
-<style></style>
+<style>
+    .el-table__row {
+        cursor: pointer;
+    }
+</style>
