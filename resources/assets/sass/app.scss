@@ -1,3 +1,21 @@
+@import 'variables';
+
 body {
   margin: 0;
+  height: 100vh;
+  width: 100%;
+  min-width: $body-min-width;
+
+  #app {
+    height: 100%;
+
+    .el-menu {
+      box-sizing: border-box;
+      height: $navbar-height;
+    }
+
+    .container {
+      height: calc(100% - #{$navbar-height});
+    }
+  }
 }
