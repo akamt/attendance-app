@@ -11,6 +11,12 @@
             </el-select>
         </div>
 
+        <div class="button-wrapper">
+            <el-button type="primary" :disabled="tableData.length === 0" @click="csvDownload">
+                CSVを出力
+            </el-button>
+        </div>
+
         <el-table v-loading="listLoading" class="tb-edit" :data="tableData" highlight-current-row
                   @row-click="handleCurrentChange" height="calc(100% - 50px)" @selection-change="handleSelectionChange"
                   :default-sort="{prop: 'use_day', order: 'descending'}">
@@ -133,6 +139,7 @@
                 periodList: [],
                 period: '',
                 tableData: [],
+                userInfo: {},
                 editData: {},
                 deleteData: [],
                 dialogVisible: false,
@@ -167,6 +174,10 @@
 
             http.get('categories', res => {
                 this.options = res.data;
+            });
+
+            http.get('users/' + this.user_id, res => {
+                this.userInfo = res.data;
             });
         },
         methods: {
@@ -239,6 +250,31 @@
             },
             confirmDelete() {
                 this.dialogVisible = true;
+            },
+            csvDownload() {
+                let csv_array = [
+                    ['日付', '経費名', '支払先', '値段', '経費種類'],
+                ];
+
+                this.tableData.forEach((item) => {
+                    csv_array.push(
+                        [item.use_day, item.name, item.payment, item.value, item.category_name]
+                    );
+                });
+
+                let element = document.createElement('a');
+                let csvName = this.period + '_' + this.userInfo.name + '_expenses';
+
+                let csv = [];
+                csv_array.forEach(function (row) {
+                    csv.push(row.join(','));
+                });
+
+                element.href = 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURIComponent(csv.join('\n'));
+                element.setAttribute('download', csvName);
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
             }
         }
     }
@@ -248,6 +284,12 @@
     .selector-wrapper {
         position: absolute;
         right: 20px;
+        top: 10px;
+    }
+
+    .button-wrapper {
+        position: absolute;
+        right: 250px;
         top: 10px;
     }
 
