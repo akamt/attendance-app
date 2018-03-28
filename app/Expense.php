@@ -25,6 +25,7 @@ class Expense extends Model
                 ['user_id', '=', $userId],
                 ['month', '=', $period],
             ])
+            ->orderBy('use_day', 'ASC')
             ->get();
 
         // 取得できない場合
