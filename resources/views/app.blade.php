@@ -6,9 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Title</title>
+        <title>経費精算</title>
 
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+        <link rel="shortcut icon" href="/favicon.png">
 
         <script>
             window.Laravel = {csrfToken: "{{ csrf_token() }}"};
