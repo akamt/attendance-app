@@ -28,4 +28,15 @@ class UserController extends Controller
         $user = new User();
         return $user->getUserList($this->userInfo->role_id, $this->userInfo->group_id);
     }
+
+    /**
+     * ユーザ情報を返す
+     *
+     * @param $id
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUserInfo($id)
+    {
+        return $userInfo = User::find($id);
+    }
 }

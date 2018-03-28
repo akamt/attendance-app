@@ -29,6 +29,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::post('categories', 'CategoryController@store');
         Route::get('users/{id}/period', 'ExpenseController@getPeriod');
         Route::get('users/{id}/expenses/{period}', 'ExpenseController@show');
+        Route::get('users/{id}', 'UserController@getUserInfo');
 
         Route::post('users/{id}/expenses', 'ExpenseController@store');
         Route::put('users/{id}/expenses', 'ExpenseController@update');
