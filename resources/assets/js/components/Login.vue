@@ -42,7 +42,7 @@
             login() {
                 userStore.login(this.form.email, this.form.password, res => {
                     console.log(res);
-                    this.$router.push('/');
+                    this.$router.push('/register');
                     nabVar.handleSelect('1');
                 }, e => {
                     this.showAlert = true;

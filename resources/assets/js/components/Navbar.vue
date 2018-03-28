@@ -1,8 +1,5 @@
 <template>
     <el-menu :router="true" :default-active="link" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-        <el-menu-item @click="toTop" index="/">
-            TOP
-        </el-menu-item>
         <el-submenu v-if="userStatus.authenticated" index="expense">
             <template slot="title">経費</template>
             <el-menu-item @click="toRegister" index="/register">

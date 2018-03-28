@@ -53,7 +53,7 @@ export default {
             let statusCode = error.response.status;
 
             if (statusCode === 405 || statusCode === 403 || statusCode === 404) {
-                window.location.href = '/';
+                window.location.href = '/register';
             }
             return Promise.reject(error)
         })
